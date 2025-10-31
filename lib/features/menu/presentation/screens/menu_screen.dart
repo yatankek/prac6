@@ -1,23 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:prac6/features/menu/data/repositories/menu_repository.dart';
 import 'package:prac6/features/menu/presentation/widgets/dish_card.dart';
-import 'package:prac6/features/menu/presentation/screens/dish_detail_screen.dart';
-import 'package:prac6/features/menu/presentation/screens/cart_screen.dart';
-import 'package:prac6/features/menu/presentation/screens/categories_screen.dart';
-import 'package:prac6/features/menu/presentation/screens/favorites_screen.dart';
-import 'package:prac6/features/menu/presentation/screens/profile_screen.dart';
 
 class MenuScreen extends StatelessWidget {
   final MenuRepository _repository = MenuRepository();
 
   MenuScreen({super.key});
-
-  void _navigateHorizontally(BuildContext context, Widget screen) {
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (context) => screen),
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -41,33 +30,24 @@ class MenuScreen extends StatelessWidget {
               leading: const Icon(Icons.category),
               title: const Text('Категории'),
               onTap: () {
-                Navigator.pop(context);
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const CategoriesScreen()),
-                );
+                context.pop();
+                context.push('/categories');
               },
             ),
             ListTile(
               leading: const Icon(Icons.favorite),
               title: const Text('Избранное'),
               onTap: () {
-                Navigator.pop(context);
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const FavoritesScreen()),
-                );
+                context.pop();
+                context.push('/favorites');
               },
             ),
             ListTile(
               leading: const Icon(Icons.person),
               title: const Text('Профиль'),
               onTap: () {
-                Navigator.pop(context);
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const ProfileScreen()),
-                );
+                context.pop();
+                context.push('/profile');
               },
             ),
           ],
@@ -80,11 +60,9 @@ class MenuScreen extends StatelessWidget {
           return DishCard(
             dish: dish,
             onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => DishDetailScreen(dish: dish),
-                ),
+              context.push(
+                '/dish/${dish.id}',
+                extra: dish,
               );
             },
           );
@@ -92,7 +70,7 @@ class MenuScreen extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          _navigateHorizontally(context, const CartScreen());
+          context.go('/cart');
         },
         backgroundColor: const Color(0xFFD32F2F),
         child: const Icon(Icons.shopping_cart, color: Colors.white),

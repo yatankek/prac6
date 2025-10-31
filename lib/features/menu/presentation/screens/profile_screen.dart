@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:prac6/features/menu/presentation/screens/favorites_screen.dart';
+import 'package:go_router/go_router.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -14,7 +14,7 @@ class ProfileScreen extends StatelessWidget {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
-            Navigator.pop(context);
+            context.pop();
           },
         ),
       ),
@@ -32,32 +32,24 @@ class ProfileScreen extends StatelessWidget {
           ListTile(
             leading: const Icon(Icons.history),
             title: const Text('История заказов'),
-            onTap: () {
-            },
+            onTap: () {},
           ),
           ListTile(
             leading: const Icon(Icons.favorite),
             title: const Text('Избранное'),
             onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const FavoritesScreen()),
-              );
+              context.push('/favorites');
             },
           ),
           ListTile(
             leading: const Icon(Icons.settings),
             title: const Text('Настройки'),
-            onTap: () {
-              // Навигация к настройкам
-            },
+            onTap: () {},
           ),
           ListTile(
             leading: const Icon(Icons.help),
             title: const Text('Помощь'),
-            onTap: () {
-              // Навигация к помощи
-            },
+            onTap: () {},
           ),
         ],
       ),

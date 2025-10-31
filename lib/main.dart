@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:prac6/features/menu/presentation/screens/menu_screen.dart';
+import 'package:go_router/go_router.dart';
+import 'routes/app_router.dart';
 
 void main() {
   runApp(const RestaurantMenuApp());
@@ -10,7 +11,7 @@ class RestaurantMenuApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MaterialApp.router(
       title: 'Ресторанное приложение',
       theme: ThemeData(
         primaryColor: const Color(0xFFD32F2F),
@@ -19,7 +20,7 @@ class RestaurantMenuApp extends StatelessWidget {
           foregroundColor: Colors.white,
         ),
       ),
-      home: MenuScreen(), // Стартуем с MenuScreen
+      routerConfig: AppRouter.router,
       debugShowCheckedModeBanner: false,
     );
   }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:prac6/features/menu/data/repositories/menu_repository.dart';
 import 'package:prac6/features/menu/presentation/widgets/dish_card.dart';
-import 'package:prac6/features/menu/presentation/screens/dish_detail_screen.dart';
 import 'package:prac6/features/menu/data/models/dish_model.dart';
 
 class CategoriesScreen extends StatefulWidget {
@@ -35,7 +35,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
-            Navigator.pop(context);
+            context.pop();
           },
         ),
       ),
@@ -84,11 +84,9 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                     return DishCard(
                       dish: dish,
                       onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => DishDetailScreen(dish: dish),
-                          ),
+                        context.push(
+                          '/dish/${dish.id}',
+                          extra: dish,
                         );
                       },
                     );
