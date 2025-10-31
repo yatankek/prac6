@@ -1,0 +1,52 @@
+import 'package:flutter/material.dart';
+import 'package:prac6/features/menu/data/repositories/favorites_repository.dart';
+import 'package:prac6/features/menu/data/repositories/menu_repository.dart';
+import 'package:prac6/features/menu/presentation/widgets/dish_card.dart';
+import 'package:prac6/features/menu/presentation/screens/dish_detail_screen.dart';
+
+class FavoritesScreen extends StatefulWidget {
+  const FavoritesScreen({super.key});
+
+  @override
+  State<FavoritesScreen> createState() => _FavoritesScreenState();
+}
+
+class _FavoritesScreenState extends State<FavoritesScreen> {
+  late final FavoritesRepository _favoritesRepository;
+
+  @override
+  void initState() {
+    super.initState();
+    _favoritesRepository = FavoritesRepository(MenuRepository());
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final favoriteDishes = _favoritesRepository.getFavorites();
+
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Избранное'),
+        backgroundColor: const Color(0xFFD32F2F),
+        foregroundColor: Colors.white,
+      ),
+      body: favoriteDishes.isEmpty
+          ? const Center(child: Text('Нет избранных блюд'))
+          : ListView.builder(
+        itemCount: favoriteDishes.length,
+        itemBuilder: (context, index) {
+          final dish = favoriteDishes[index];
+          return DishCard(
+            dish: dish,
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => DishDetailScreen(dish: dish)),
+              );
+            },
+          );
+        },
+      ),
+    );
+  }
+}

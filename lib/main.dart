@@ -11,9 +11,15 @@ class RestaurantMenuApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Меню Ресторана',
-      theme: ThemeData(primaryColor: const Color(0xFFD32F2F)),
-      home: MenuScreen(),
+      title: 'Ресторанное приложение',
+      theme: ThemeData(
+        primaryColor: const Color(0xFFD32F2F),
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Color(0xFFD32F2F),
+          foregroundColor: Colors.white,
+        ),
+      ),
+      home: MenuScreen(), // Стартуем с MenuScreen
       debugShowCheckedModeBanner: false,
     );
   }
