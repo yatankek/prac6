@@ -11,6 +11,12 @@ class ProfileScreen extends StatelessWidget {
         title: const Text('Профиль'),
         backgroundColor: const Color(0xFFD32F2F),
         foregroundColor: Colors.white,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
       ),
       body: ListView(
         children: [
@@ -27,7 +33,6 @@ class ProfileScreen extends StatelessWidget {
             leading: const Icon(Icons.history),
             title: const Text('История заказов'),
             onTap: () {
-              // Навигация к истории заказов
             },
           ),
           ListTile(
@@ -36,7 +41,7 @@ class ProfileScreen extends StatelessWidget {
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => FavoritesScreen()),
+                MaterialPageRoute(builder: (context) => const FavoritesScreen()),
               );
             },
           ),

@@ -29,6 +29,12 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
         title: const Text('Избранное'),
         backgroundColor: const Color(0xFFD32F2F),
         foregroundColor: Colors.white,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
       ),
       body: favoriteDishes.isEmpty
           ? const Center(child: Text('Нет избранных блюд'))
