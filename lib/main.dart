@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:prac6/features/menu/presentation/screens/menu_screen.dart';
+import 'package:prac6/features/menu/presentation/screens/auth_screen.dart';
 
 void main() {
   runApp(const RestaurantMenuApp());
@@ -19,7 +19,7 @@ class RestaurantMenuApp extends StatelessWidget {
           foregroundColor: Colors.white,
         ),
       ),
-      home: MenuScreen(), // Стартуем с MenuScreen
+      home: const AuthScreen(), // Начинаем с экрана авторизации
       debugShowCheckedModeBanner: false,
     );
   }

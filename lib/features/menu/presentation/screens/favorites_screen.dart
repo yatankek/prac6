@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:prac6/features/menu/data/repositories/favorites_repository.dart';
 import 'package:prac6/features/menu/data/repositories/menu_repository.dart';
+import 'package:prac6/features/menu/presentation/screens/menu_screen.dart';
 import 'package:prac6/features/menu/presentation/widgets/dish_card.dart';
 import 'package:prac6/features/menu/presentation/screens/dish_detail_screen.dart';
 
@@ -37,7 +38,19 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
         ),
       ),
       body: favoriteDishes.isEmpty
-          ? const Center(child: Text('Нет избранных блюд'))
+          ? const Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.favorite_border, size: 64, color: Colors.grey),
+            SizedBox(height: 16),
+            Text(
+              'Нет избранных блюд',
+              style: TextStyle(fontSize: 18, color: Colors.grey),
+            ),
+          ],
+        ),
+      )
           : ListView.builder(
         itemCount: favoriteDishes.length,
         itemBuilder: (context, index) {

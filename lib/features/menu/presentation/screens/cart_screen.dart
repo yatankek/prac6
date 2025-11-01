@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:prac6/features/menu/data/repositories/cart_repository.dart';
 import 'package:prac6/features/menu/data/repositories/menu_repository.dart';
 import 'package:prac6/features/menu/presentation/widgets/dish_card.dart';
-import 'package:prac6/features/menu/presentation/screens/menu_screen.dart';
 import 'package:prac6/features/menu/presentation/screens/categories_screen.dart';
 import 'package:prac6/features/menu/presentation/screens/favorites_screen.dart';
 import 'package:prac6/features/menu/presentation/screens/profile_screen.dart';
@@ -16,13 +15,6 @@ class CartScreen extends StatefulWidget {
 
 class _CartScreenState extends State<CartScreen> {
   late final CartRepository _cartRepository;
-
-  void _navigateHorizontally(BuildContext context, Widget screen) {
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (context) => screen),
-    );
-  }
 
   @override
   void initState() {
@@ -40,56 +32,62 @@ class _CartScreenState extends State<CartScreen> {
         title: const Text('Корзина'),
         backgroundColor: const Color(0xFFD32F2F),
         foregroundColor: Colors.white,
-      ),
-      drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: [
-            const DrawerHeader(
-              decoration: BoxDecoration(color: Color(0xFFD32F2F)),
-              child: Text('Навигация', style: TextStyle(color: Colors.white, fontSize: 24)),
-            ),
-            ListTile(
-              leading: const Icon(Icons.category),
-              title: const Text('Категории'),
-              onTap: () {
-                Navigator.pop(context);
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const CategoriesScreen()),
-                );
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.favorite),
-              title: const Text('Избранное'),
-              onTap: () {
-                Navigator.pop(context);
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const FavoritesScreen()),
-                );
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.person),
-              title: const Text('Профиль'),
-              onTap: () {
-                Navigator.pop(context);
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const ProfileScreen()),
-                );
-              },
-            ),
-          ],
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pop(context);
+          },
         ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.category),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => CategoriesScreen()),
+              );
+            },
+            tooltip: 'Категории',
+          ),
+          IconButton(
+            icon: const Icon(Icons.favorite),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => FavoritesScreen()),
+              );
+            },
+            tooltip: 'Избранное',
+          ),
+          IconButton(
+            icon: const Icon(Icons.person),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => ProfileScreen()),
+              );
+            },
+            tooltip: 'Профиль',
+          ),
+        ],
       ),
       body: Column(
         children: [
           Expanded(
             child: cartItems.isEmpty
-                ? const Center(child: Text('Корзина пуста'))
+                ? const Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.shopping_cart_outlined, size: 64, color: Colors.grey),
+                  SizedBox(height: 16),
+                  Text(
+                    'Корзина пуста',
+                    style: TextStyle(fontSize: 18, color: Colors.grey),
+                  ),
+                ],
+              ),
+            )
                 : ListView.builder(
               itemCount: cartItems.length,
               itemBuilder: (context, index) {
@@ -101,6 +99,10 @@ class _CartScreenState extends State<CartScreen> {
           if (cartItems.isNotEmpty)
             Container(
               padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: Colors.grey[100],
+                border: Border(top: BorderSide(color: Colors.grey[300]!)),
+              ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -110,13 +112,6 @@ class _CartScreenState extends State<CartScreen> {
               ),
             ),
         ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          _navigateHorizontally(context, MenuScreen());
-        },
-        backgroundColor: const Color(0xFFD32F2F),
-        child: const Icon(Icons.restaurant_menu, color: Colors.white),
       ),
     );
   }

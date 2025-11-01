@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:prac6/features/menu/data/repositories/menu_repository.dart';
+import 'package:prac6/features/menu/presentation/screens/menu_screen.dart';
 import 'package:prac6/features/menu/presentation/widgets/dish_card.dart';
-import 'package:prac6/features/menu/presentation/screens/dish_detail_screen.dart';
 import 'package:prac6/features/menu/data/models/dish_model.dart';
+import 'package:prac6/features/menu/presentation/screens/dish_detail_screen.dart';
 
 class CategoriesScreen extends StatefulWidget {
   const CategoriesScreen({super.key});
@@ -86,9 +87,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                       onTap: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(
-                            builder: (context) => DishDetailScreen(dish: dish),
-                          ),
+                          MaterialPageRoute(builder: (context) => DishDetailScreen(dish: dish)),
                         );
                       },
                     );
