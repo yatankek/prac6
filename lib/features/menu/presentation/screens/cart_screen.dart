@@ -30,47 +30,53 @@ class _CartScreenState extends State<CartScreen> {
         title: const Text('Корзина'),
         backgroundColor: const Color(0xFFD32F2F),
         foregroundColor: Colors.white,
-      ),
-      drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: [
-            const DrawerHeader(
-              decoration: BoxDecoration(color: Color(0xFFD32F2F)),
-              child: Text('Навигация', style: TextStyle(color: Colors.white, fontSize: 24)),
-            ),
-            ListTile(
-              leading: const Icon(Icons.category),
-              title: const Text('Категории'),
-              onTap: () {
-                context.pop();
-                context.push('/categories');
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.favorite),
-              title: const Text('Избранное'),
-              onTap: () {
-                context.pop();
-                context.push('/favorites');
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.person),
-              title: const Text('Профиль'),
-              onTap: () {
-                context.pop();
-                context.push('/profile');
-              },
-            ),
-          ],
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            context.pop();
+          },
         ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.category),
+            onPressed: () {
+              context.go('/categories');
+            },
+            tooltip: 'Категории',
+          ),
+          IconButton(
+            icon: const Icon(Icons.favorite),
+            onPressed: () {
+              context.go('/favorites');
+            },
+            tooltip: 'Избранное',
+          ),
+          IconButton(
+            icon: const Icon(Icons.person),
+            onPressed: () {
+              context.go('/profile');
+            },
+            tooltip: 'Профиль',
+          ),
+        ],
       ),
       body: Column(
         children: [
           Expanded(
             child: cartItems.isEmpty
-                ? const Center(child: Text('Корзина пуста'))
+                ? const Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.shopping_cart_outlined, size: 64, color: Colors.grey),
+                  SizedBox(height: 16),
+                  Text(
+                    'Корзина пуста',
+                    style: TextStyle(fontSize: 18, color: Colors.grey),
+                  ),
+                ],
+              ),
+            )
                 : ListView.builder(
               itemCount: cartItems.length,
               itemBuilder: (context, index) {
@@ -95,13 +101,6 @@ class _CartScreenState extends State<CartScreen> {
               ),
             ),
         ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          context.go('/');
-        },
-        backgroundColor: const Color(0xFFD32F2F),
-        child: const Icon(Icons.restaurant_menu, color: Colors.white),
       ),
     );
   }

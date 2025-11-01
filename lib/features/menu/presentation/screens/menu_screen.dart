@@ -17,41 +17,30 @@ class MenuScreen extends StatelessWidget {
         title: const Text('Меню Ресторана'),
         backgroundColor: const Color(0xFFD32F2F),
         foregroundColor: Colors.white,
-      ),
-      drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: [
-            const DrawerHeader(
-              decoration: BoxDecoration(color: Color(0xFFD32F2F)),
-              child: Text('Навигация', style: TextStyle(color: Colors.white, fontSize: 24)),
-            ),
-            ListTile(
-              leading: const Icon(Icons.category),
-              title: const Text('Категории'),
-              onTap: () {
-                context.pop();
-                context.push('/categories');
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.favorite),
-              title: const Text('Избранное'),
-              onTap: () {
-                context.pop();
-                context.push('/favorites');
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.person),
-              title: const Text('Профиль'),
-              onTap: () {
-                context.pop();
-                context.push('/profile');
-              },
-            ),
-          ],
-        ),
+        automaticallyImplyLeading: false,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.category),
+            onPressed: () {
+              context.go('/categories');
+            },
+            tooltip: 'Категории',
+          ),
+          IconButton(
+            icon: const Icon(Icons.favorite),
+            onPressed: () {
+              context.go('/favorites');
+            },
+            tooltip: 'Избранное',
+          ),
+          IconButton(
+            icon: const Icon(Icons.person),
+            onPressed: () {
+              context.go('/profile');
+            },
+            tooltip: 'Профиль',
+          ),
+        ],
       ),
       body: ListView.builder(
         itemCount: dishes.length,
@@ -60,7 +49,7 @@ class MenuScreen extends StatelessWidget {
           return DishCard(
             dish: dish,
             onTap: () {
-              context.push(
+              context.go(
                 '/dish/${dish.id}',
                 extra: dish,
               );
@@ -70,7 +59,7 @@ class MenuScreen extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          context.go('/cart');
+          context.push('/cart');
         },
         backgroundColor: const Color(0xFFD32F2F),
         child: const Icon(Icons.shopping_cart, color: Colors.white),

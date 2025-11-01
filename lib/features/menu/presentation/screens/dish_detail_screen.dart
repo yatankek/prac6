@@ -21,7 +21,7 @@ class DishDetailScreen extends StatelessWidget {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
-            context.pop();
+            context.go('/');
           },
         ),
       ),

@@ -11,10 +11,11 @@ class ProfileScreen extends StatelessWidget {
         title: const Text('Профиль'),
         backgroundColor: const Color(0xFFD32F2F),
         foregroundColor: Colors.white,
+        // ТОЛЬКО стрелка назад, без других кнопок
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
-            context.pop();
+            context.go('/');
           },
         ),
       ),
@@ -25,29 +26,29 @@ class ProfileScreen extends StatelessWidget {
             accountEmail: Text('ivan@example.com'),
             currentAccountPicture: CircleAvatar(
               backgroundColor: Colors.white,
-              child: Icon(Icons.person, size: 40),
+              child: Icon(Icons.person, size: 40, color: Color(0xFFD32F2F)),
             ),
             decoration: BoxDecoration(color: Color(0xFFD32F2F)),
           ),
           ListTile(
-            leading: const Icon(Icons.history),
+            leading: const Icon(Icons.history, color: Color(0xFFD32F2F)),
             title: const Text('История заказов'),
             onTap: () {},
           ),
           ListTile(
-            leading: const Icon(Icons.favorite),
+            leading: const Icon(Icons.favorite, color: Color(0xFFD32F2F)),
             title: const Text('Избранное'),
             onTap: () {
-              context.push('/favorites');
+              context.go('/favorites');
             },
           ),
           ListTile(
-            leading: const Icon(Icons.settings),
+            leading: const Icon(Icons.settings, color: Color(0xFFD32F2F)),
             title: const Text('Настройки'),
             onTap: () {},
           ),
           ListTile(
-            leading: const Icon(Icons.help),
+            leading: const Icon(Icons.help, color: Color(0xFFD32F2F)),
             title: const Text('Помощь'),
             onTap: () {},
           ),

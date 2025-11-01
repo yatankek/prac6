@@ -32,12 +32,24 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
-            context.pop();
+            context.go('/');
           },
         ),
       ),
       body: favoriteDishes.isEmpty
-          ? const Center(child: Text('Нет избранных блюд'))
+          ? const Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.favorite_border, size: 64, color: Colors.grey),
+            SizedBox(height: 16),
+            Text(
+              'Нет избранных блюд',
+              style: TextStyle(fontSize: 18, color: Colors.grey),
+            ),
+          ],
+        ),
+      )
           : ListView.builder(
         itemCount: favoriteDishes.length,
         itemBuilder: (context, index) {
@@ -45,7 +57,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
           return DishCard(
             dish: dish,
             onTap: () {
-              context.push(
+              context.go(
                 '/dish/${dish.id}',
                 extra: dish,
               );
