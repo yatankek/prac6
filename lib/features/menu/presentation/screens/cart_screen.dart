@@ -40,21 +40,21 @@ class _CartScreenState extends State<CartScreen> {
           IconButton(
             icon: const Icon(Icons.category),
             onPressed: () {
-              context.go('/categories');
+              context.push('/categories');
             },
             tooltip: 'Категории',
           ),
           IconButton(
             icon: const Icon(Icons.favorite),
             onPressed: () {
-              context.go('/favorites');
+              context.push('/favorites');
             },
             tooltip: 'Избранное',
           ),
           IconButton(
             icon: const Icon(Icons.person),
             onPressed: () {
-              context.go('/profile');
+              context.push('/profile');
             },
             tooltip: 'Профиль',
           ),

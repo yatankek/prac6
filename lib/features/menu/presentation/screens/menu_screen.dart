@@ -22,21 +22,21 @@ class MenuScreen extends StatelessWidget {
           IconButton(
             icon: const Icon(Icons.category),
             onPressed: () {
-              context.go('/categories');
+              context.push('/categories');
             },
             tooltip: 'Категории',
           ),
           IconButton(
             icon: const Icon(Icons.favorite),
             onPressed: () {
-              context.go('/favorites');
+              context.push('/favorites');
             },
             tooltip: 'Избранное',
           ),
           IconButton(
             icon: const Icon(Icons.person),
             onPressed: () {
-              context.go('/profile');
+              context.push('/profile');
             },
             tooltip: 'Профиль',
           ),
@@ -49,7 +49,7 @@ class MenuScreen extends StatelessWidget {
           return DishCard(
             dish: dish,
             onTap: () {
-              context.go(
+              context.push(
                 '/dish/${dish.id}',
                 extra: dish,
               );

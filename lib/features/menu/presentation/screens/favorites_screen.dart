@@ -32,7 +32,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
-            context.go('/');
+            context.pop();
           },
         ),
       ),
@@ -57,7 +57,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
           return DishCard(
             dish: dish,
             onTap: () {
-              context.go(
+              context.push(
                 '/dish/${dish.id}',
                 extra: dish,
               );

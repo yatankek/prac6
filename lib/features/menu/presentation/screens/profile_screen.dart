@@ -11,11 +11,10 @@ class ProfileScreen extends StatelessWidget {
         title: const Text('Профиль'),
         backgroundColor: const Color(0xFFD32F2F),
         foregroundColor: Colors.white,
-        // ТОЛЬКО стрелка назад, без других кнопок
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
-            context.go('/');
+            context.pop();
           },
         ),
       ),
@@ -39,7 +38,7 @@ class ProfileScreen extends StatelessWidget {
             leading: const Icon(Icons.favorite, color: Color(0xFFD32F2F)),
             title: const Text('Избранное'),
             onTap: () {
-              context.go('/favorites');
+              context.push('/favorites');
             },
           ),
           ListTile(
@@ -51,6 +50,17 @@ class ProfileScreen extends StatelessWidget {
             leading: const Icon(Icons.help, color: Color(0xFFD32F2F)),
             title: const Text('Помощь'),
             onTap: () {},
+          ),
+          const Divider(),
+          ListTile(
+            leading: const Icon(Icons.logout, color: Colors.red),
+            title: const Text(
+              'Выйти',
+              style: TextStyle(color: Colors.red),
+            ),
+            onTap: () {
+              context.go('/auth');
+            },
           ),
         ],
       ),

@@ -35,7 +35,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
-            context.go('/');
+            context.pop();
           },
         ),
       ),
@@ -84,7 +84,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                     return DishCard(
                       dish: dish,
                       onTap: () {
-                        context.go(
+                        context.push(
                           '/dish/${dish.id}',
                           extra: dish,
                         );

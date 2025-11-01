@@ -5,12 +5,18 @@ import 'package:prac6/features/menu/presentation/screens/categories_screen.dart'
 import 'package:prac6/features/menu/presentation/screens/favorites_screen.dart';
 import 'package:prac6/features/menu/presentation/screens/profile_screen.dart';
 import 'package:prac6/features/menu/presentation/screens/dish_detail_screen.dart';
+import 'package:prac6/features/menu/presentation/screens/auth_screen.dart';
 import 'package:prac6/features/menu/data/models/dish_model.dart';
 
 class AppRouter {
   static final GoRouter router = GoRouter(
-    initialLocation: '/',
+    initialLocation: '/auth',
     routes: [
+      GoRoute(
+        path: '/auth',
+        name: 'auth',
+        builder: (context, state) => const AuthScreen(),
+      ),
       GoRoute(
         path: '/',
         name: 'menu',
