@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:prac6/features/menu/presentation/screens/auth_screen.dart';
-import 'favorites_screen.dart';
+import 'package:prac6/features/menu/presentation/screens/favorites_screen.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:prac6/features/menu/data/repositories/menu_repository.dart';
 import 'package:prac6/features/menu/presentation/widgets/dish_card.dart';
-import 'cart_screen.dart';
-import 'categories_screen.dart';
-import 'favorites_screen.dart';
-import 'profile_screen.dart';
-import 'dish_detail_screen.dart';
+import 'package:prac6/features/menu/presentation/screens/cart_screen.dart';
+import 'package:prac6/features/menu/presentation/screens/categories_screen.dart';
+import 'package:prac6/features/menu/presentation/screens/favorites_screen.dart';
+import 'package:prac6/features/menu/presentation/screens/profile_screen.dart';
+import 'package:prac6/features/menu/presentation/screens/dish_detail_screen.dart';
 
 class MenuScreen extends StatelessWidget {
   final MenuRepository _repository = MenuRepository();
