@@ -1,29 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:prac6/features/menu/data/repositories/cart_repository.dart';
-import 'package:prac6/features/menu/data/repositories/menu_repository.dart';
 import 'package:prac6/features/menu/presentation/widgets/dish_card.dart';
+import 'package:prac6/service_locator.dart';
+import 'package:prac6/app_state.dart';
 
-class CartScreen extends StatefulWidget {
+class CartScreen extends StatelessWidget {
   const CartScreen({super.key});
 
   @override
-  State<CartScreen> createState() => _CartScreenState();
-}
-
-class _CartScreenState extends State<CartScreen> {
-  late final CartRepository _cartRepository;
-
-  @override
-  void initState() {
-    super.initState();
-    _cartRepository = CartRepository(MenuRepository());
-  }
-
-  @override
   Widget build(BuildContext context) {
-    final cartItems = _cartRepository.getCartItems();
-    final totalPrice = _cartRepository.getTotalPrice();
+    final cartRepository = getIt<CartRepository>();
+    final cartItems = cartRepository.getCartItems();
+    final totalPrice = cartRepository.getTotalPrice();
+
+    final appState = AppState.of(context);
 
     return Scaffold(
       appBar: AppBar(
@@ -44,12 +35,33 @@ class _CartScreenState extends State<CartScreen> {
             },
             tooltip: 'Категории',
           ),
-          IconButton(
-            icon: const Icon(Icons.favorite),
-            onPressed: () {
-              context.push('/favorites');
-            },
-            tooltip: 'Избранное',
+          Stack(
+            children: [
+              IconButton(
+                icon: const Icon(Icons.favorite),
+                onPressed: () {
+                  context.push('/favorites');
+                },
+                tooltip: 'Избранное',
+              ),
+              if (appState.favoriteCount > 0)
+                Positioned(
+                  right: 8,
+                  top: 8,
+                  child: CircleAvatar(
+                    radius: 8,
+                    backgroundColor: Colors.red,
+                    child: Text(
+                      appState.favoriteCount.toString(),
+                      style: const TextStyle(
+                        fontSize: 10,
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+            ],
           ),
           IconButton(
             icon: const Icon(Icons.person),

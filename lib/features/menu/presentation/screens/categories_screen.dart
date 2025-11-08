@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:prac6/features/menu/data/models/dish_model.dart';
 import 'package:prac6/features/menu/data/repositories/menu_repository.dart';
 import 'package:prac6/features/menu/presentation/widgets/dish_card.dart';
-import 'package:prac6/features/menu/data/models/dish_model.dart';
+import 'package:prac6/service_locator.dart';
+import 'package:prac6/app_state.dart';
 
 class CategoriesScreen extends StatefulWidget {
   const CategoriesScreen({super.key});
@@ -12,21 +14,23 @@ class CategoriesScreen extends StatefulWidget {
 }
 
 class _CategoriesScreenState extends State<CategoriesScreen> {
-  final MenuRepository _repository = MenuRepository();
   final PageController _pageController = PageController();
   int _currentPage = 0;
 
   final List<String> categories = ['Все', 'Паста', 'Пицца', 'Гриль', 'Салаты', 'Десерты'];
 
-  List<Dish> _getDishesByCategory(String category) {
-    if (category == 'Все') {
-      return _repository.getAllDishes();
-    }
-    return _repository.getAllDishes().where((dish) => dish.name.contains(category)).toList();
-  }
-
   @override
   Widget build(BuildContext context) {
+    final menuRepository = getIt<MenuRepository>();
+    final appState = AppState.of(context);
+
+    List<Dish> _getDishesByCategory(String category) {
+      if (category == 'Все') {
+        return menuRepository.getAllDishes();
+      }
+      return menuRepository.getAllDishes().where((dish) => dish.name.contains(category)).toList();
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Категории'),
@@ -38,6 +42,71 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
             context.pop();
           },
         ),
+        actions: [
+          Stack(
+            children: [
+              IconButton(
+                icon: const Icon(Icons.favorite),
+                onPressed: () {
+                  context.push('/favorites');
+                },
+                tooltip: 'Избранное',
+              ),
+              if (appState.favoriteCount > 0)
+                Positioned(
+                  right: 8,
+                  top: 8,
+                  child: CircleAvatar(
+                    radius: 8,
+                    backgroundColor: Colors.red,
+                    child: Text(
+                      appState.favoriteCount.toString(),
+                      style: const TextStyle(
+                        fontSize: 10,
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+            ],
+          ),
+          Stack(
+            children: [
+              IconButton(
+                icon: const Icon(Icons.shopping_cart),
+                onPressed: () {
+                  context.push('/cart');
+                },
+                tooltip: 'Корзина',
+              ),
+              if (appState.cartItemsCount > 0)
+                Positioned(
+                  right: 8,
+                  top: 8,
+                  child: CircleAvatar(
+                    radius: 8,
+                    backgroundColor: Colors.green,
+                    child: Text(
+                      appState.cartItemsCount.toString(),
+                      style: const TextStyle(
+                        fontSize: 10,
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+            ],
+          ),
+          IconButton(
+            icon: const Icon(Icons.person),
+            onPressed: () {
+              context.push('/profile');
+            },
+            tooltip: 'Профиль',
+          ),
+        ],
       ),
       body: Column(
         children: [

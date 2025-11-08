@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:prac6/app_state.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final appState = AppState.of(context);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Профиль'),
@@ -28,11 +31,6 @@ class ProfileScreen extends StatelessWidget {
               child: Icon(Icons.person, size: 40, color: Color(0xFFD32F2F)),
             ),
             decoration: BoxDecoration(color: Color(0xFFD32F2F)),
-          ),
-          ListTile(
-            leading: const Icon(Icons.history, color: Color(0xFFD32F2F)),
-            title: const Text('История заказов'),
-            onTap: () {},
           ),
           ListTile(
             leading: const Icon(Icons.favorite, color: Color(0xFFD32F2F)),
