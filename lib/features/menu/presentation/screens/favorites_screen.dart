@@ -1,28 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:prac6/features/menu/data/repositories/favorites_repository.dart';
-import 'package:prac6/features/menu/data/repositories/menu_repository.dart';
 import 'package:prac6/features/menu/presentation/widgets/dish_card.dart';
+import 'package:prac6/service_locator.dart';
+import 'package:prac6/app_state.dart';
 
-class FavoritesScreen extends StatefulWidget {
+class FavoritesScreen extends StatelessWidget {
   const FavoritesScreen({super.key});
 
   @override
-  State<FavoritesScreen> createState() => _FavoritesScreenState();
-}
-
-class _FavoritesScreenState extends State<FavoritesScreen> {
-  late final FavoritesRepository _favoritesRepository;
-
-  @override
-  void initState() {
-    super.initState();
-    _favoritesRepository = FavoritesRepository(MenuRepository());
-  }
-
-  @override
   Widget build(BuildContext context) {
-    final favoriteDishes = _favoritesRepository.getFavorites();
+    final favoritesRepository = getIt<FavoritesRepository>();
+    final favoriteDishes = favoritesRepository.getFavorites();
+
+    final appState = AppState.of(context);
 
     return Scaffold(
       appBar: AppBar(
