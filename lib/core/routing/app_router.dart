@@ -3,9 +3,9 @@ import 'package:prac6/features/menu/presentation/screens/menu_screen.dart';
 import 'package:prac6/features/menu/presentation/screens/cart_screen.dart';
 import 'package:prac6/features/menu/presentation/screens/categories_screen.dart';
 import 'package:prac6/features/menu/presentation/screens/favorites_screen.dart';
-import 'package:prac6/features/menu/presentation/screens/profile_screen.dart';
+import 'package:prac6/features/profile/presentation/screens/profile_screen.dart';
 import 'package:prac6/features/menu/presentation/screens/dish_detail_screen.dart';
-import 'package:prac6/features/menu/presentation/screens/auth_screen.dart';
+import 'package:prac6/features/auth/presentation/screens/auth_screen.dart';
 import 'package:prac6/features/menu/data/models/dish_model.dart';
 
 class AppRouter {
