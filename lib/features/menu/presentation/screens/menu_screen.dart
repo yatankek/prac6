@@ -1,19 +1,34 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:prac6/features/menu/data/repositories/menu_repository.dart';
+import 'package:prac6/features/menu/data/bloc/menu/menu_cubit.dart';
+import 'package:prac6/features/menu/data/bloc/cart/cart_cubit.dart';
+import 'package:prac6/features/menu/data/bloc/favorites/favorites_cubit.dart';
+import 'package:prac6/features/menu/data/bloc/menu/menu_state.dart';
 import 'package:prac6/features/menu/presentation/widgets/dish_card.dart';
-import 'package:prac6/service_locator.dart';
 import 'package:prac6/app_state.dart';
 
 class MenuScreen extends StatelessWidget {
-  MenuScreen({super.key});
-
-  final _menuRepository = getIt<MenuRepository>();
+  const MenuScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final dishes = _menuRepository.getAllDishes();
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (context) => MenuCubit()..loadMenu()),
+        BlocProvider(create: (context) => CartCubit()..loadCart()),
+        BlocProvider(create: (context) => FavoritesCubit()..loadFavorites()),
+      ],
+      child: const MenuView(),
+    );
+  }
+}
 
+class MenuView extends StatelessWidget {
+  const MenuView({super.key});
+
+  @override
+  Widget build(BuildContext context) {
     final appState = AppState.of(context);
 
     return Scaffold(
@@ -67,18 +82,63 @@ class MenuScreen extends StatelessWidget {
           ),
         ],
       ),
-      body: ListView.builder(
-        itemCount: dishes.length,
-        itemBuilder: (context, index) {
-          final dish = dishes[index];
-          return DishCard(
-            dish: dish,
-            onTap: () {
-              context.push(
-                '/dish/${dish.id}',
-                extra: dish,
-              );
-            },
+      body: BlocBuilder<MenuCubit, MenuState>(
+        builder: (context, state) {
+          if (state.isLoading) {
+            return const Center(child: CircularProgressIndicator());
+          }
+
+          return Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: TextField(
+                  decoration: const InputDecoration(
+                    hintText: 'Поиск блюд...',
+                    prefixIcon: Icon(Icons.search),
+                    border: OutlineInputBorder(),
+                  ),
+                  onChanged: (value) {
+                    context.read<MenuCubit>().searchDishes(value);
+                  },
+                ),
+              ),
+              Expanded(
+                child: ListView.builder(
+                  itemCount: state.displayDishes.length,
+                  itemBuilder: (context, index) {
+                    final dish = state.displayDishes[index];
+                    return DishCard(
+                      dish: dish,
+                      onTap: () {
+                        context.push(
+                          '/dish/${dish.id}',
+                          extra: dish,
+                        );
+                      },
+                      onFavoritePressed: () {
+                        final favoritesCubit = context.read<FavoritesCubit>();
+                        if (favoritesCubit.state.favorites.any((fav) => fav.id == dish.id)) {
+                          favoritesCubit.removeFromFavorites(dish.id);
+                        } else {
+                          favoritesCubit.addToFavorites(dish.id);
+                        }
+                        appState.refreshUI();
+                      },
+                      onCartPressed: () {
+                        final cartCubit = context.read<CartCubit>();
+                        if (cartCubit.state.cartItems.any((item) => item.id == dish.id)) {
+                          cartCubit.removeFromCart(dish.id);
+                        } else {
+                          cartCubit.addToCart(dish.id);
+                        }
+                        appState.refreshUI();
+                      },
+                    );
+                  },
+                ),
+              ),
+            ],
           );
         },
       ),

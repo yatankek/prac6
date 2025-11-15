@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:prac6/features/menu/data/repositories/cart_repository.dart';
 import 'package:prac6/features/menu/data/repositories/favorites_repository.dart';
-import 'package:prac6/service_locator.dart';
+import 'package:prac6/core/di/service_locator.dart';
 
 class AppState extends InheritedWidget {
   final int favoriteCount;

@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
-import 'routes/app_router.dart';
-import 'service_locator.dart';
-import 'app_state.dart';
+import 'package:bloc/bloc.dart';
+import 'package:prac6/app_state.dart';
+import 'package:prac6/core/di/service_locator.dart';
+import 'package:prac6/core/observer/counter_observer.dart';
+import 'core/routing/app_router.dart';
 
 void main() {
   setupServiceLocator();
+  Bloc.observer = const CounterObserver();
   runApp(const RestaurantMenuApp());
 }
 
