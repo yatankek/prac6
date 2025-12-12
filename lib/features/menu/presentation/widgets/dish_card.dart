@@ -1,19 +1,36 @@
+// lib/features/menu/presentation/widgets/dish_card.dart
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:prac6/features/menu/data/models/dish_model.dart';
+import 'package:prac6/features/menu/data/repositories/cart_repository.dart';
+import 'package:prac6/features/menu/data/repositories/favorites_repository.dart';
+import 'package:prac6/core/di/service_locator.dart';
+import 'package:prac6/app_state.dart';
 
 class DishCard extends StatelessWidget {
   final Dish dish;
   final VoidCallback onTap;
+  final VoidCallback? onFavoritePressed;
+  final VoidCallback? onCartPressed;
 
   const DishCard({
     super.key,
     required this.dish,
     required this.onTap,
+    this.onFavoritePressed,
+    this.onCartPressed,
   });
 
   @override
   Widget build(BuildContext context) {
+    final favoritesRepository = getIt<FavoritesRepository>();
+    final cartRepository = getIt<CartRepository>();
+
+    final appState = AppState.of(context);
+
+    final isFavorite = favoritesRepository.isFavorite(dish.id);
+    final isInCart = cartRepository.isInCart(dish.id);
+
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: InkWell(
@@ -59,6 +76,40 @@ class DishCard extends StatelessWidget {
                         fontSize: 14,
                         color: Colors.grey[600],
                       ),
+                    ),
+                    const SizedBox(height: 8),
+                    Row(
+                      children: [
+                        IconButton(
+                          icon: Icon(
+                            isFavorite ? Icons.favorite : Icons.favorite_border,
+                            color: isFavorite ? Colors.red : Colors.grey,
+                          ),
+                          onPressed: onFavoritePressed ?? () {
+                            // Резервная логика, если колбэк не передан
+                            if (isFavorite) {
+                              favoritesRepository.removeFromFavorites(dish.id);
+                            } else {
+                              favoritesRepository.addToFavorites(dish.id);
+                            }
+                            appState.refreshUI();
+                          },
+                        ),
+                        IconButton(
+                          icon: Icon(
+                            isInCart ? Icons.shopping_cart : Icons.add_shopping_cart,
+                            color: isInCart ? Colors.green : Colors.grey,
+                          ),
+                          onPressed: onCartPressed ?? () {
+                            if (isInCart) {
+                              cartRepository.removeFromCart(dish.id);
+                            } else {
+                              cartRepository.addToCart(dish.id);
+                            }
+                            appState.refreshUI();
+                          },
+                        ),
+                      ],
                     ),
                   ],
                 ),
