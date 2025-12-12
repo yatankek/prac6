@@ -4,6 +4,7 @@ import 'package:prac6/features/menu/presentation/screens/cart_screen.dart';
 import 'package:prac6/features/menu/presentation/screens/categories_screen.dart';
 import 'package:prac6/features/menu/presentation/screens/favorites_screen.dart';
 import 'package:prac6/features/profile/presentation/screens/profile_screen.dart';
+import 'package:prac6/features/settings/presentation/screens/settings_screen.dart';
 import 'package:prac6/features/menu/presentation/screens/dish_detail_screen.dart';
 import 'package:prac6/features/auth/presentation/screens/auth_screen.dart';
 import 'package:prac6/features/menu/data/models/dish_model.dart';
@@ -20,7 +21,7 @@ class AppRouter {
       GoRoute(
         path: '/',
         name: 'menu',
-        builder: (context, state) => MenuScreen(),
+        builder: (context, state) => const MenuScreen(),
       ),
       GoRoute(
         path: '/cart',
@@ -41,6 +42,11 @@ class AppRouter {
         path: '/profile',
         name: 'profile',
         builder: (context, state) => const ProfileScreen(),
+      ),
+      GoRoute(
+        path: '/settings',
+        name: 'settings',
+        builder: (context, state) => const SettingsScreen(),
       ),
       GoRoute(
         path: '/dish/:id',
