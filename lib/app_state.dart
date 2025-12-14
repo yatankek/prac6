@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:prac6/features/menu/data/repositories/cart_repository.dart';
-import 'package:prac6/features/menu/data/repositories/favorites_repository.dart';
 import 'package:prac6/core/di/service_locator.dart';
+import 'package:prac6/domain/repositories/cart_repository.dart';
+import 'package:prac6/domain/repositories/favorites_repository.dart';
 
 class AppState extends InheritedWidget {
   final int favoriteCount;
   final int cartItemsCount;
-  final VoidCallback refreshUI;
+  final Future<void> Function() refreshUI;
 
   const AppState({
     super.key,
@@ -42,18 +42,28 @@ class _AppStateContainerState extends State<AppStateContainer> {
   int _favoriteCount = 0;
   int _cartItemsCount = 0;
 
-  void _refreshUI() {
+  Future<void> _refreshUI() async {
+    final favorites = await getIt<FavoritesRepository>().getFavorites();
+    final cartItems = await getIt<CartRepository>().getCartItems();
     setState(() {
-      _favoriteCount = getIt<FavoritesRepository>().getFavorites().length;
-      _cartItemsCount = getIt<CartRepository>().getCartItems().length;
+      _favoriteCount = favorites.length;
+      _cartItemsCount = cartItems.length;
     });
   }
 
   @override
   void initState() {
     super.initState();
-    _favoriteCount = getIt<FavoritesRepository>().getFavorites().length;
-    _cartItemsCount = getIt<CartRepository>().getCartItems().length;
+    _loadInitialState();
+  }
+
+  Future<void> _loadInitialState() async {
+    final favorites = await getIt<FavoritesRepository>().getFavorites();
+    final cartItems = await getIt<CartRepository>().getCartItems();
+    setState(() {
+      _favoriteCount = favorites.length;
+      _cartItemsCount = cartItems.length;
+    });
   }
 
   @override

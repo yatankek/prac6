@@ -5,7 +5,8 @@ import 'package:prac6/app_state.dart';
 import 'package:prac6/core/di/service_locator.dart';
 import 'package:prac6/core/observer/counter_observer.dart';
 import 'package:prac6/core/routing/app_router.dart';
-import 'package:prac6/features/settings/data/bloc/settings_cubit.dart';
+import 'package:prac6/presentation/settings/bloc/settings_cubit.dart';
+import 'package:prac6/presentation/auth/bloc/auth_cubit.dart';
 
 void main() {
   setupServiceLocator();
@@ -18,8 +19,15 @@ class RestaurantMenuApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => SettingsCubit(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<AuthCubit>(
+          create: (context) => AuthCubit(),
+        ),
+        BlocProvider<SettingsCubit>(
+          create: (context) => SettingsCubit(),
+        ),
+      ],
       child: AppStateContainer(
         child: BlocBuilder<SettingsCubit, SettingsState>(
           builder: (context, settingsState) {

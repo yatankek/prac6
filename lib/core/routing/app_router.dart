@@ -1,13 +1,13 @@
 import 'package:go_router/go_router.dart';
-import 'package:prac6/features/menu/presentation/screens/menu_screen.dart';
-import 'package:prac6/features/menu/presentation/screens/cart_screen.dart';
-import 'package:prac6/features/menu/presentation/screens/categories_screen.dart';
-import 'package:prac6/features/menu/presentation/screens/favorites_screen.dart';
-import 'package:prac6/features/profile/presentation/screens/profile_screen.dart';
-import 'package:prac6/features/settings/presentation/screens/settings_screen.dart';
-import 'package:prac6/features/menu/presentation/screens/dish_detail_screen.dart';
-import 'package:prac6/features/auth/presentation/screens/auth_screen.dart';
-import 'package:prac6/features/menu/data/models/dish_model.dart';
+import 'package:prac6/core/models/dish.dart';
+import 'package:prac6/presentation/menu/screens/menu_screen.dart';
+import 'package:prac6/presentation/menu/screens/cart_screen.dart';
+import 'package:prac6/presentation/menu/screens/categories_screen.dart';
+import 'package:prac6/presentation/menu/screens/favorites_screen.dart';
+import 'package:prac6/presentation/profile/screens/profile_screen.dart';
+import 'package:prac6/presentation/settings/screens/settings_screen.dart';
+import 'package:prac6/presentation/menu/screens/dish_detail_screen.dart';
+import 'package:prac6/presentation/auth/screens/auth_screen.dart';
 
 class AppRouter {
   static final GoRouter router = GoRouter(
