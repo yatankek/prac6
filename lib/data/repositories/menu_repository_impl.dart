@@ -1,20 +1,19 @@
 import 'package:prac6/core/models/dish.dart';
 import 'package:prac6/domain/repositories/menu_repository.dart';
-import 'package:prac6/data/datasources/menu_local_data_source.dart';
-import 'package:prac6/data/mappers/dish_mapper.dart';
+import 'package:prac6/data/datasources/remote/menu_remote_data_source.dart';
 
 /// Реализация репозитория меню
-/// Координирует работу Data Sources и использует Mappers для преобразования данных
+/// Теперь использует удаленный источник данных (Remote Data Source)
 class MenuRepositoryImpl implements MenuRepository {
-  final MenuLocalDataSource _localDataSource;
+  final MenuRemoteDataSource _remoteDataSource;
 
-  MenuRepositoryImpl(this._localDataSource);
+  MenuRepositoryImpl(this._remoteDataSource);
 
   @override
   Future<List<Dish>> getAllDishes() async {
     try {
-      final dtos = await _localDataSource.getAllDishes();
-      return DishMapper.toDomainList(dtos);
+      // Default query to get some items
+      return await _remoteDataSource.searchDishes('Chicken');
     } catch (e) {
       throw Exception('Ошибка при получении блюд: $e');
     }
@@ -23,8 +22,7 @@ class MenuRepositoryImpl implements MenuRepository {
   @override
   Future<Dish> getDishById(String id) async {
     try {
-      final dto = await _localDataSource.getDishById(id);
-      return DishMapper.toDomain(dto);
+      return await _remoteDataSource.getDishById(id);
     } catch (e) {
       throw Exception('Ошибка при получении блюда: $e');
     }
@@ -33,20 +31,30 @@ class MenuRepositoryImpl implements MenuRepository {
   @override
   Future<List<Dish>> searchDishes(String query) async {
     try {
-      final allDishes = await getAllDishes();
       if (query.isEmpty) {
-        return allDishes;
+        return await getAllDishes();
       }
-      final lowerQuery = query.toLowerCase();
-      return allDishes.where((dish) {
-        return dish.name.toLowerCase().contains(lowerQuery) ||
-            dish.description.toLowerCase().contains(lowerQuery);
-      }).toList();
+      return await _remoteDataSource.searchDishes(query);
     } catch (e) {
       throw Exception('Ошибка при поиске блюд: $e');
     }
   }
+
+  @override
+  Future<List<String>> getCategories() async {
+    try {
+      return await _remoteDataSource.getCategories();
+    } catch (e) {
+      throw Exception('Ошибка загрузки категорий: $e');
+    }
+  }
+
+  @override
+  Future<List<Dish>> getDishesByCategory(String category) async {
+    try {
+      return await _remoteDataSource.getDishesByCategory(category);
+    } catch (e) {
+      throw Exception('Ошибка загрузки блюд категории: $e');
+    }
+  }
 }
-
-
-

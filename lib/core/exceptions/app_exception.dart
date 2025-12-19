@@ -19,11 +19,6 @@ class DataException extends AppException {
   const DataException(super.message, {super.code});
 }
 
-/// Исключение сети
-class NetworkException extends AppException {
-  const NetworkException(super.message, {super.code});
-}
-
 /// Исключение валидации
 class ValidationException extends AppException {
   const ValidationException(super.message, {super.code});

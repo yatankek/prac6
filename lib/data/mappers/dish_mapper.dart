@@ -1,10 +1,7 @@
 import 'package:prac6/core/models/dish.dart';
-import 'package:prac6/data/dtos/dish_dto.dart';
+import 'package:prac6/data/datasources/remote/models/dish_dto.dart';
 
-/// Mapper для преобразования между DTO и бизнес-моделями
-/// Изолирует логику трансформации данных
 class DishMapper {
-  /// Преобразование DTO в бизнес-модель
   static Dish toDomain(DishDto dto) {
     return Dish(
       id: dto.id,
@@ -15,7 +12,6 @@ class DishMapper {
     );
   }
 
-  /// Преобразование бизнес-модели в DTO
   static DishDto toDto(Dish dish) {
     return DishDto(
       id: dish.id,
@@ -26,16 +22,11 @@ class DishMapper {
     );
   }
 
-  /// Преобразование списка DTO в список моделей
   static List<Dish> toDomainList(List<DishDto> dtos) {
     return dtos.map((dto) => toDomain(dto)).toList();
   }
 
-  /// Преобразование списка моделей в список DTO
   static List<DishDto> toDtoList(List<Dish> dishes) {
     return dishes.map((dish) => toDto(dish)).toList();
   }
 }
-
-
-

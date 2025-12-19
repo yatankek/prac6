@@ -10,6 +10,8 @@ import 'package:prac6/presentation/menu/widgets/dish_card.dart';
 import 'package:prac6/app_state.dart';
 import 'package:prac6/core/di/service_locator.dart';
 import 'package:prac6/domain/usecases/get_all_dishes.dart';
+import 'package:prac6/domain/usecases/get_categories.dart';
+import 'package:prac6/domain/usecases/get_dishes_by_category.dart';
 
 class CategoriesScreen extends StatefulWidget {
   const CategoriesScreen({super.key});
@@ -35,6 +37,8 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
     return BlocProvider(
       create: (context) => CategoriesCubit(
         getAllDishes: getIt<GetAllDishes>(),
+        getCategories: getIt<GetCategories>(),
+        getDishesByCategory: getIt<GetDishesByCategory>(),
       )..loadCategories(),
       child: Scaffold(
         appBar: AppBar(
@@ -104,188 +108,81 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                   ),
               ],
             ),
-            IconButton(
-              icon: const Icon(Icons.person),
-              onPressed: () {
-                context.push('/profile');
-              },
-              tooltip: 'Профиль',
-            ),
           ],
         ),
         body: BlocBuilder<CategoriesCubit, CategoriesState>(
           builder: (context, state) {
-            if (state.isLoading) {
-              return const Center(
-                child: CircularProgressIndicator(
-                  valueColor: AlwaysStoppedAnimation<Color>(Color(0xFFD32F2F)),
-                ),
-              );
+            if (state.isLoading && state.categories.isEmpty) {
+              return const Center(child: CircularProgressIndicator());
             }
 
             return Column(
               children: [
-                // Категории в виде горизонтального списка
-                SizedBox(
+                Container(
                   height: 60,
+                  padding: const EdgeInsets.symmetric(vertical: 8),
                   child: ListView.builder(
                     scrollDirection: Axis.horizontal,
                     itemCount: state.categories.length,
                     itemBuilder: (context, index) {
                       final category = state.categories[index];
-                      final isSelected = _currentPage == index;
+                      final isSelected = category == state.selectedCategory;
 
                       return Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
+                        padding: const EdgeInsets.symmetric(horizontal: 4),
                         child: ChoiceChip(
-                          label: Text(
-                            category,
-                            style: TextStyle(
-                              color: isSelected ? Colors.white : const Color(0xFFD32F2F),
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
+                          label: Text(category),
                           selected: isSelected,
                           onSelected: (selected) {
-                            setState(() {
-                              _currentPage = index;
+                            if (selected) {
                               context.read<CategoriesCubit>().selectCategory(category);
-                              _pageController.animateToPage(
-                                index,
-                                duration: const Duration(milliseconds: 300),
-                                curve: Curves.easeInOut,
-                              );
-                            });
+                            }
                           },
-                          backgroundColor: Colors.white,
                           selectedColor: const Color(0xFFD32F2F),
-                          side: BorderSide(
-                            color: const Color(0xFFD32F2F).withValues(alpha: 0.5),
-                          ),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20),
+                          labelStyle: TextStyle(
+                            color: isSelected ? Colors.white : Colors.black,
                           ),
                         ),
                       );
                     },
                   ),
                 ),
-
-                const SizedBox(height: 8),
-
-                // Индикатор текущей категории
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Row(
-                    children: [
-                      Text(
-                        'Категория: ',
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Colors.grey[600],
-                        ),
-                      ),
-                      Text(
-                        state.selectedCategory,
-                        style: const TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold,
-                          color: Color(0xFFD32F2F),
-                        ),
-                      ),
-                      const Spacer(),
-                      Text(
-                        '${state.displayDishes.length} блюд',
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Colors.grey[600],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-
-                const SizedBox(height: 8),
-
-                // Разделитель
-                Container(
-                  height: 1,
-                  color: Colors.grey[300],
-                ),
-
-                // Список блюд в виде PageView
                 Expanded(
-                  child: PageView(
-                    controller: _pageController,
-                    onPageChanged: (index) {
-                      setState(() {
-                        _currentPage = index;
-                        final category = state.categories[index];
-                        context.read<CategoriesCubit>().selectCategory(category);
-                      });
-                    },
-                    children: state.categories.map((category) {
-                      final categoryDishes = category == 'Все'
-                          ? state.dishes
-                          : state.dishes.where((dish) => dish.name.contains(category)).toList();
-
-                      if (categoryDishes.isEmpty) {
-                        return Center(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(
-                                Icons.restaurant_menu,
-                                size: 64,
-                                color: Colors.grey[400],
-                              ),
-                              const SizedBox(height: 16),
-                              Text(
-                                'В этой категории пока нет блюд',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  color: Colors.grey[600],
-                                ),
-                              ),
-                            ],
+                  child: state.isLoading
+                      ? const Center(child: CircularProgressIndicator())
+                      : GridView.builder(
+                          padding: const EdgeInsets.all(16),
+                          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            childAspectRatio: 0.75,
+                            crossAxisSpacing: 16,
+                            mainAxisSpacing: 16,
                           ),
-                        );
-                      }
-
-                      return ListView.builder(
-                        padding: const EdgeInsets.only(top: 8),
-                        itemCount: categoryDishes.length,
-                        itemBuilder: (context, index) {
-                          final dish = categoryDishes[index];
-                          return DishCard(
-                            dish: dish,
-                            onTap: () {
-                              context.push(
-                                '/dish/${dish.id}',
-                                extra: dish,
-                              );
-                            },
-                            onFavoritePressed: () {
-                              context.read<FavoritesCubit>().toggleFavorite(dish.id);
-                              appState.refreshUI();
-                            },
-                            onCartPressed: () {
-                              final cartCubit = context.read<CartCubit>();
-                              final isCurrentlyInCart = cartCubit.state.cartItems
-                                  .any((item) => item.id == dish.id);
-
-                              if (isCurrentlyInCart) {
-                                cartCubit.removeFromCart(dish.id);
-                              } else {
-                                cartCubit.addToCart(dish.id);
-                              }
-                              appState.refreshUI();
-                            },
-                          );
-                        },
-                      );
-                    }).toList(),
-                  ),
+                          itemCount: state.filteredDishes.length,
+                          itemBuilder: (context, index) {
+                            final dish = state.filteredDishes[index];
+                            return DishCard(
+                              dish: dish,
+                              onTap: () {
+                                context.push('/dish/${dish.id}', extra: dish);
+                              },
+                              onCartPressed: () {
+                                context.read<CartCubit>().addToCart(dish.id);
+                                appState.refreshUI();
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text('${dish.name} добавлено в корзину'),
+                                    duration: const Duration(seconds: 1),
+                                  ),
+                                );
+                              },
+                              onFavoritePressed: () {
+                                context.read<FavoritesCubit>().toggleFavorite(dish.id);
+                                appState.refreshUI();
+                              },
+                            );
+                          },
+                        ),
                 ),
               ],
             );

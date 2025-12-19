@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:prac6/presentation/profile/bloc/profile_cubit.dart';
 import 'package:prac6/app_state.dart';
+import 'package:prac6/core/di/service_locator.dart';
+import 'package:prac6/domain/repositories/user_repository.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -10,7 +12,7 @@ class ProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => ProfileCubit()..loadUserData(),
+      create: (context) => ProfileCubit(getIt<UserRepository>())..loadUserData(),
       child: const ProfileView(),
     );
   }
@@ -98,237 +100,93 @@ class _ProfileViewState extends State<ProfileView> {
             context.pop();
           },
         ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.logout),
+            onPressed: () {
+              context.read<ProfileCubit>().logout();
+              context.go('/auth');
+            },
+          ),
+        ],
       ),
-      body: BlocBuilder<ProfileCubit, ProfileState>(
+      body: BlocConsumer<ProfileCubit, ProfileState>(
+        listener: (context, state) {
+          // Listen for side effects if needed
+        },
         builder: (context, state) {
           if (state.isLoading) {
             return const Center(child: CircularProgressIndicator());
           }
 
           return SingleChildScrollView(
+            padding: const EdgeInsets.all(16.0),
             child: Column(
               children: [
-                // Шапка профиля с аватаром
-                Container(
-                  color: const Color(0xFFD32F2F),
-                  padding: const EdgeInsets.all(24),
-                  child: Column(
-                    children: [
-                      const CircleAvatar(
-                        radius: 50,
-                        backgroundColor: Colors.white,
-                        child: Icon(
-                          Icons.person,
-                          size: 60,
-                          color: Color(0xFFD32F2F),
-                        ),
-                      ),
-                      const SizedBox(height: 16),
-                      if (!_isEditing)
-                        Column(
-                          children: [
-                            Text(
-                              state.userName,
-                              style: const TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white,
-                              ),
-                            ),
-                            const SizedBox(height: 4),
-                            Text(
-                              state.userEmail,
-                              style: const TextStyle(
-                                fontSize: 16,
-                                color: Colors.white70,
-                              ),
-                            ),
-                          ],
-                        ),
-                      const SizedBox(height: 16),
-                      if (!_isEditing)
-                        ElevatedButton.icon(
-                          onPressed: () => _startEditing(state),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.white,
-                            foregroundColor: const Color(0xFFD32F2F),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                          ),
-                          icon: const Icon(Icons.edit, size: 18),
-                          label: const Text('Редактировать профиль'),
-                        ),
-                    ],
-                  ),
+                const SizedBox(height: 20),
+                const CircleAvatar(
+                  radius: 50,
+                  backgroundColor: Color(0xFFD32F2F),
+                  child: Icon(Icons.person, size: 50, color: Colors.white),
                 ),
-
-                // Форма редактирования
-                if (_isEditing)
-                  Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Column(
-                      children: [
-                        TextField(
-                          controller: _nameController,
-                          decoration: const InputDecoration(
-                            labelText: 'Имя',
-                            prefixIcon: Icon(Icons.person_outline),
-                            border: OutlineInputBorder(),
-                            contentPadding: EdgeInsets.symmetric(
-                              vertical: 12,
-                              horizontal: 16,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 16),
-                        TextField(
-                          controller: _emailController,
-                          decoration: const InputDecoration(
-                            labelText: 'Email',
-                            prefixIcon: Icon(Icons.email_outlined),
-                            border: OutlineInputBorder(),
-                            contentPadding: EdgeInsets.symmetric(
-                              vertical: 12,
-                              horizontal: 16,
-                            ),
-                          ),
-                          keyboardType: TextInputType.emailAddress,
-                        ),
-                        const SizedBox(height: 24),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: OutlinedButton(
-                                onPressed: _cancelEditing,
-                                style: OutlinedButton.styleFrom(
-                                  foregroundColor: const Color(0xFFD32F2F),
-                                  side: const BorderSide(
-                                    color: Color(0xFFD32F2F),
-                                  ),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                  padding: const EdgeInsets.symmetric(vertical: 14),
-                                ),
-                                child: const Text('Отмена'),
-                              ),
-                            ),
-                            const SizedBox(width: 16),
-                            Expanded(
-                              child: ElevatedButton(
-                                onPressed: () => _saveChanges(context),
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: const Color(0xFFD32F2F),
-                                  foregroundColor: Colors.white,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                  padding: const EdgeInsets.symmetric(vertical: 14),
-                                ),
-                                child: const Text('Сохранить'),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
+                const SizedBox(height: 24),
+                if (_isEditing) ...[
+                  TextField(
+                    controller: _nameController,
+                    decoration: const InputDecoration(
+                      labelText: 'Имя',
+                      border: OutlineInputBorder(),
                     ),
                   ),
-
-                Padding(
-                  padding: EdgeInsets.only(top: _isEditing ? 24 : 16),
-                  child: Column(
+                  const SizedBox(height: 16),
+                  TextField(
+                    controller: _emailController,
+                    decoration: const InputDecoration(
+                      labelText: 'Email',
+                      border: OutlineInputBorder(),
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      ListTile(
-                        leading: const Icon(Icons.favorite, color: Color(0xFFD32F2F)),
-                        title: const Text('Избранное'),
-                        trailing: appState.favoriteCount > 0
-                            ? CircleAvatar(
-                          radius: 12,
-                          backgroundColor: Colors.red,
-                          child: Text(
-                            appState.favoriteCount.toString(),
-                            style: const TextStyle(
-                              fontSize: 10,
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        )
-                            : null,
-                        onTap: () {
-                          context.push('/favorites');
-                        },
-                      ),
-                      ListTile(
-                        leading: const Icon(Icons.settings, color: Color(0xFFD32F2F)),
-                        title: const Text('Настройки'),
-                        trailing: const Icon(Icons.chevron_right, color: Colors.grey),
-                        onTap: () {
-                          context.push('/settings');
-                        },
-                      ),
-                      ListTile(
-                        leading: const Icon(Icons.help, color: Color(0xFFD32F2F)),
-                        title: const Text('Помощь'),
-                        trailing: const Icon(Icons.chevron_right, color: Colors.grey),
-                        onTap: () {
-                          showDialog(
-                            context: context,
-                            builder: (context) => AlertDialog(
-                              title: const Text('Помощь'),
-                              content: const Text(
-                                'Для получения помощи обратитесь в службу поддержки:\n\n'
-                                    'Телефон: 8-800-123-45-67\n'
-                                    'Email: support@restaurantapp.ru',
-                              ),
-                              actions: [
-                                TextButton(
-                                  onPressed: () => Navigator.pop(context),
-                                  child: const Text('OK'),
-                                ),
-                              ],
-                            ),
-                          );
-                        },
-                      ),
-                      const Divider(),
-                      ListTile(
-                        leading: const Icon(Icons.logout, color: Colors.red),
-                        title: const Text(
-                          'Выйти из аккаунта',
-                          style: TextStyle(color: Colors.red),
+                      ElevatedButton(
+                        onPressed: _cancelEditing,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.grey,
                         ),
-                        onTap: () {
-                          showDialog(
-                            context: context,
-                            builder: (context) => AlertDialog(
-                              title: const Text('Выход'),
-                              content: const Text('Вы уверены, что хотите выйти из аккаунта?'),
-                              actions: [
-                                TextButton(
-                                  onPressed: () => Navigator.pop(context),
-                                  child: const Text('Отмена'),
-                                ),
-                                TextButton(
-                                  onPressed: () {
-                                    Navigator.pop(context);
-                                    context.read<ProfileCubit>().logout();
-                                    context.go('/auth');
-                                  },
-                                  child: const Text(
-                                    'Выйти',
-                                    style: TextStyle(color: Colors.red),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          );
-                        },
+                        child: const Text('Отмена', style: TextStyle(color: Colors.white)),
+                      ),
+                      ElevatedButton(
+                        onPressed: () => _saveChanges(context),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFFD32F2F),
+                        ),
+                        child: const Text('Сохранить', style: TextStyle(color: Colors.white)),
                       ),
                     ],
                   ),
-                ),
+                ] else ...[
+                  ListTile(
+                    title: const Text('Имя', style: TextStyle(color: Colors.grey)),
+                    subtitle: Text(
+                      state.userName.isEmpty ? 'Не указано' : state.userName,
+                      style: const TextStyle(fontSize: 18),
+                    ),
+                    trailing: IconButton(
+                      icon: const Icon(Icons.edit, color: Color(0xFFD32F2F)),
+                      onPressed: () => _startEditing(state),
+                    ),
+                  ),
+                  const Divider(),
+                  ListTile(
+                    title: const Text('Email', style: TextStyle(color: Colors.grey)),
+                    subtitle: Text(
+                      state.userEmail.isEmpty ? 'Не указано' : state.userEmail,
+                      style: const TextStyle(fontSize: 18),
+                    ),
+                  ),
+                ],
               ],
             ),
           );

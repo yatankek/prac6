@@ -6,6 +6,7 @@ import 'package:prac6/domain/usecases/add_to_favorites.dart';
 import 'package:prac6/domain/usecases/remove_from_favorites.dart';
 import 'package:prac6/domain/usecases/add_to_cart.dart';
 import 'package:prac6/domain/usecases/remove_from_cart.dart';
+import 'package:prac6/domain/usecases/get_dish_by_id.dart';
 import 'package:prac6/domain/repositories/cart_repository.dart';
 
 /// Cubit для управления состоянием деталей блюда
@@ -16,6 +17,7 @@ class DishDetailCubit extends Cubit<DishDetailState> {
   final AddToCart _addToCart;
   final RemoveFromCart _removeFromCart;
   final CartRepository _cartRepository;
+  final GetDishById _getDishById;
 
   DishDetailCubit({
     required CheckIsFavorite checkIsFavorite,
@@ -24,29 +26,36 @@ class DishDetailCubit extends Cubit<DishDetailState> {
     required AddToCart addToCart,
     required RemoveFromCart removeFromCart,
     required CartRepository cartRepository,
+    required GetDishById getDishById,
   })  : _checkIsFavorite = checkIsFavorite,
         _addToFavorites = addToFavorites,
         _removeFromFavorites = removeFromFavorites,
         _addToCart = addToCart,
         _removeFromCart = removeFromCart,
         _cartRepository = cartRepository,
+        _getDishById = getDishById,
         super(const DishDetailState());
 
   /// Загрузить детали блюда
-  Future<void> loadDish(Dish dish) async {
-    emit(state.copyWith(isLoading: true));
+  Future<void> loadDish(Dish initialDish) async {
+    emit(state.copyWith(isLoading: true, dish: initialDish));
 
     try {
-      final isFavorite = await _checkIsFavorite(dish.id);
-      final isInCart = await _cartRepository.isInCart(dish.id);
+      final isFavorite = await _checkIsFavorite(initialDish.id);
+      final isInCart = await _cartRepository.isInCart(initialDish.id);
+      
+      // Fetch full details from API to get description and other fields
+      // that might be missing in list view (e.g. from filter by category)
+      final fullDish = await _getDishById(initialDish.id);
 
       emit(DishDetailState(
-        dish: dish,
+        dish: fullDish,
         isFavorite: isFavorite,
         isInCart: isInCart,
         isLoading: false,
       ));
     } catch (e) {
+      // If API fails, we still have the initial dish data
       emit(state.copyWith(isLoading: false));
     }
   }
@@ -85,4 +94,3 @@ class DishDetailCubit extends Cubit<DishDetailState> {
     }
   }
 }
-

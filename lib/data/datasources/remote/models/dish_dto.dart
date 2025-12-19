@@ -1,5 +1,3 @@
-/// Data Transfer Object для блюда
-/// Соответствует формату внешнего источника данных (JSON, API и т.д.)
 class DishDto {
   final String id;
   final String name;
@@ -15,7 +13,6 @@ class DishDto {
     required this.imageUrl,
   });
 
-  /// Создание из JSON (если данные приходят из API)
   factory DishDto.fromJson(Map<String, dynamic> json) {
     return DishDto(
       id: json['id'] as String,
@@ -26,7 +23,6 @@ class DishDto {
     );
   }
 
-  /// Преобразование в JSON (для отправки в API)
   Map<String, dynamic> toJson() {
     return {
       'id': id,
@@ -37,6 +33,3 @@ class DishDto {
     };
   }
 }
-
-
-

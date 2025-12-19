@@ -1,4 +1,4 @@
-import 'package:prac6/data/dtos/dish_dto.dart';
+import 'package:prac6/data/datasources/remote/models/dish_dto.dart';
 
 /// Локальный источник данных для меню
 /// Инкапсулирует детали работы с конкретным источником (in-memory, SQLite и т.д.)
