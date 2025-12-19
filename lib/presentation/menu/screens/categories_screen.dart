@@ -10,15 +10,6 @@ import 'package:prac6/presentation/menu/widgets/dish_card.dart';
 import 'package:prac6/app_state.dart';
 import 'package:prac6/core/di/service_locator.dart';
 import 'package:prac6/domain/usecases/get_all_dishes.dart';
-import 'package:prac6/domain/usecases/get_cart_items.dart';
-import 'package:prac6/domain/usecases/get_cart_total.dart';
-import 'package:prac6/domain/usecases/add_to_cart.dart';
-import 'package:prac6/domain/usecases/remove_from_cart.dart';
-import 'package:prac6/domain/usecases/clear_cart.dart';
-import 'package:prac6/domain/usecases/get_favorites.dart';
-import 'package:prac6/domain/usecases/add_to_favorites.dart';
-import 'package:prac6/domain/usecases/remove_from_favorites.dart';
-import 'package:prac6/domain/usecases/check_is_favorite.dart';
 
 class CategoriesScreen extends StatefulWidget {
   const CategoriesScreen({super.key});
@@ -41,31 +32,10 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
   Widget build(BuildContext context) {
     final appState = AppState.of(context);
 
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider(
-          create: (context) => CategoriesCubit(
-            getAllDishes: getIt<GetAllDishes>(),
-          )..loadCategories(),
-        ),
-        BlocProvider(
-          create: (context) => CartCubit(
-            getCartItems: getIt<GetCartItems>(),
-            getCartTotal: getIt<GetCartTotal>(),
-            addToCart: getIt<AddToCart>(),
-            removeFromCart: getIt<RemoveFromCart>(),
-            clearCart: getIt<ClearCart>(),
-          )..loadCart(),
-        ),
-        BlocProvider(
-          create: (context) => FavoritesCubit(
-            getFavorites: getIt<GetFavorites>(),
-            addToFavorites: getIt<AddToFavorites>(),
-            removeFromFavorites: getIt<RemoveFromFavorites>(),
-            checkIsFavorite: getIt<CheckIsFavorite>(),
-          )..loadFavorites(),
-        ),
-      ],
+    return BlocProvider(
+      create: (context) => CategoriesCubit(
+        getAllDishes: getIt<GetAllDishes>(),
+      )..loadCategories(),
       child: Scaffold(
         appBar: AppBar(
           title: const Text('Категории'),
@@ -190,7 +160,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                           backgroundColor: Colors.white,
                           selectedColor: const Color(0xFFD32F2F),
                           side: BorderSide(
-                            color: const Color(0xFFD32F2F).withOpacity(0.5),
+                            color: const Color(0xFFD32F2F).withValues(alpha: 0.5),
                           ),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(20),

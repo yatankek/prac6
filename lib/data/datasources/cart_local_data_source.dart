@@ -1,3 +1,6 @@
+import 'package:prac6/data/datasources/app_database.dart';
+import 'package:drift/drift.dart';
+
 /// Локальный источник данных для корзины
 abstract class CartLocalDataSource {
   /// Получить ID всех товаров в корзине
@@ -19,46 +22,50 @@ abstract class CartLocalDataSource {
   Future<void> clear();
 }
 
-/// In-memory реализация источника данных корзины
+/// Drift реализация источника данных корзины
 class CartLocalDataSourceImpl implements CartLocalDataSource {
-  List<String> _cartItemIds = ['2', '4'];
+  final AppDatabase database;
+
+  CartLocalDataSourceImpl({required this.database});
 
   @override
   Future<List<String>> getCartItemIds() async {
-    await Future.delayed(const Duration(milliseconds: 50));
-    return List.unmodifiable(_cartItemIds);
+    final items = await database.select(database.cartItems).get();
+    return items.map((item) => item.dishId).toList();
   }
 
   @override
   Future<void> addItem(String dishId) async {
-    await Future.delayed(const Duration(milliseconds: 50));
-    if (!_cartItemIds.contains(dishId)) {
-      _cartItemIds.add(dishId);
-    }
+    await database.into(database.cartItems).insertOnConflictUpdate(
+      CartItemsCompanion(dishId: Value(dishId))
+    );
   }
 
   @override
   Future<void> removeItem(String dishId) async {
-    await Future.delayed(const Duration(milliseconds: 50));
-    _cartItemIds.remove(dishId);
+    await (database.delete(database.cartItems)..where((t) => t.dishId.equals(dishId))).go();
   }
 
   @override
   Future<bool> isItemInCart(String dishId) async {
-    await Future.delayed(const Duration(milliseconds: 50));
-    return _cartItemIds.contains(dishId);
+    final query = database.select(database.cartItems)..where((t) => t.dishId.equals(dishId));
+    final result = await query.getSingleOrNull();
+    return result != null;
   }
 
   @override
   Future<int> getItemsCount() async {
-    await Future.delayed(const Duration(milliseconds: 50));
-    return _cartItemIds.length;
+    final countExp = database.cartItems.dishId.count();
+    final query = database.selectOnly(database.cartItems)..addColumns([countExp]);
+    final result = await query.map((row) => row.read(countExp)).getSingle();
+    return result ?? 0;
   }
 
   @override
   Future<void> clear() async {
-    await Future.delayed(const Duration(milliseconds: 50));
-    _cartItemIds.clear();
+    await database.delete(database.cartItems).go();
   }
 }
+
+
 

@@ -8,10 +8,7 @@ class AuthScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => AuthCubit(),
-      child: const AuthView(),
-    );
+    return const AuthView();
   }
 }
 

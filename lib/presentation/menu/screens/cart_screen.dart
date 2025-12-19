@@ -5,28 +5,13 @@ import 'package:prac6/presentation/menu/cubit/cart_cubit.dart';
 import 'package:prac6/presentation/menu/cubit/cart_state.dart';
 import 'package:prac6/presentation/menu/widgets/dish_card.dart';
 import 'package:prac6/app_state.dart';
-import 'package:prac6/core/di/service_locator.dart';
-import 'package:prac6/domain/usecases/get_cart_items.dart';
-import 'package:prac6/domain/usecases/get_cart_total.dart';
-import 'package:prac6/domain/usecases/add_to_cart.dart';
-import 'package:prac6/domain/usecases/remove_from_cart.dart';
-import 'package:prac6/domain/usecases/clear_cart.dart';
 
 class CartScreen extends StatelessWidget {
   const CartScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => CartCubit(
-        getCartItems: getIt<GetCartItems>(),
-        getCartTotal: getIt<GetCartTotal>(),
-        addToCart: getIt<AddToCart>(),
-        removeFromCart: getIt<RemoveFromCart>(),
-        clearCart: getIt<ClearCart>(),
-      )..loadCart(),
-      child: const CartView(),
-    );
+    return const CartView();
   }
 }
 

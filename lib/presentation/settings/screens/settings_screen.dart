@@ -8,10 +8,7 @@ class SettingsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => SettingsCubit(),
-      child: const SettingsView(),
-    );
+    return const SettingsView();
   }
 }
 
@@ -64,7 +61,7 @@ class SettingsView extends StatelessWidget {
                   onChanged: (value) {
                     context.read<SettingsCubit>().setNotifications(value);
                   },
-                  activeColor: const Color(0xFFD32F2F),
+                  activeTrackColor: const Color(0xFFD32F2F),
                 ),
               ),
               _buildListTile(
@@ -76,7 +73,7 @@ class SettingsView extends StatelessWidget {
                   onChanged: (value) {
                     context.read<SettingsCubit>().setSoundEffects(value);
                   },
-                  activeColor: const Color(0xFFD32F2F),
+                  activeTrackColor: const Color(0xFFD32F2F),
                 ),
               ),
 

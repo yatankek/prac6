@@ -29,3 +29,5 @@ class Dish {
   @override
   int get hashCode => Object.hash(id, name, description, price, imageUrl);
 }
+
+

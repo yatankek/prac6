@@ -1,3 +1,6 @@
+import 'package:prac6/data/datasources/app_database.dart';
+import 'package:drift/drift.dart';
+
 /// Локальный источник данных для избранного
 abstract class FavoritesLocalDataSource {
   /// Получить ID всех избранных блюд
@@ -16,40 +19,45 @@ abstract class FavoritesLocalDataSource {
   Future<int> getFavoritesCount();
 }
 
-/// In-memory реализация источника данных избранного
+/// Drift реализация источника данных избранного
 class FavoritesLocalDataSourceImpl implements FavoritesLocalDataSource {
-  List<String> _favoriteIds = ['1', '5'];
+  final AppDatabase database;
+
+  FavoritesLocalDataSourceImpl({required this.database});
 
   @override
   Future<List<String>> getFavoriteIds() async {
-    await Future.delayed(const Duration(milliseconds: 50));
-    return List.unmodifiable(_favoriteIds);
+    final items = await database.select(database.favoriteItems).get();
+    return items.map((item) => item.dishId).toList();
   }
 
   @override
   Future<void> addFavorite(String dishId) async {
-    await Future.delayed(const Duration(milliseconds: 50));
-    if (!_favoriteIds.contains(dishId)) {
-      _favoriteIds.add(dishId);
-    }
+    await database.into(database.favoriteItems).insertOnConflictUpdate(
+      FavoriteItemsCompanion(dishId: Value(dishId))
+    );
   }
 
   @override
   Future<void> removeFavorite(String dishId) async {
-    await Future.delayed(const Duration(milliseconds: 50));
-    _favoriteIds.remove(dishId);
+    await (database.delete(database.favoriteItems)..where((t) => t.dishId.equals(dishId))).go();
   }
 
   @override
   Future<bool> isFavorite(String dishId) async {
-    await Future.delayed(const Duration(milliseconds: 50));
-    return _favoriteIds.contains(dishId);
+    final query = database.select(database.favoriteItems)..where((t) => t.dishId.equals(dishId));
+    final result = await query.getSingleOrNull();
+    return result != null;
   }
 
   @override
   Future<int> getFavoritesCount() async {
-    await Future.delayed(const Duration(milliseconds: 50));
-    return _favoriteIds.length;
+    final countExp = database.favoriteItems.dishId.count();
+    final query = database.selectOnly(database.favoriteItems)..addColumns([countExp]);
+    final result = await query.map((row) => row.read(countExp)).getSingle();
+    return result ?? 0;
   }
 }
+
+
 
